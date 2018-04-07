@@ -12,7 +12,6 @@ Get the last 5 datapoints for the electricity interchange between CAISO and Comi
 
 ```python3
 >>> from eiapy import Series
->>> from pprint import pprint
 >>> caiso_to_cfe = Series('EBA.CISO-CFE.ID.H')
 >>> pprint(caiso_to_cfe.last(5))
 {'request': {'command': 'series', 'series_id': 'EBA.CISO-CFE.ID.H'},
@@ -38,7 +37,7 @@ Get the last 5 datapoints for the electricity interchange between CAISO and Comi
 
 ## TODO list
 
-- Implement Geoset & Relation
+- Implement Relation
 - Finish other methods
 - Clean up main
 - Docstrings
@@ -48,5 +47,13 @@ Get the last 5 datapoints for the electricity interchange between CAISO and Comi
 - Notes on api behaviour
 - Make a pip package, maybe use pipenv
 - Define python versions supported. 3.5/3.6+?
-- Add xml option
 - Version numbering system
+- Make code more DRY
+
+## Notes on API behaviour
+- When providing invalid time limits for a series data request data=[] is returned.
+- When an invalid series id is passed this is the response.
+```
+# {'request': {'series_id': 'eba.ciso-cfe.id.', 'command': 'series', 'num': '5'},
+#  'data': {'error': 'invalid series_id. For key registration, documentation, and examples see https://www.eia.gov/developer/'}}
+```
