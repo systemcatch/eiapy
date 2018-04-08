@@ -11,6 +11,7 @@ from xml.etree import ElementTree
 # check 200 needed?
 # NOTE allow just list to be returned?
 # TODO session suport?
+# IDEA kwargs for future proofing
 
 API_KEY = os.environ['EIA_KEY']
 
@@ -87,7 +88,7 @@ class Series(object):
         return data
 
 
-    # TODO make sure this is properly done
+    # TODO include xml kwarg?
     def __repr__(self):
         return '{}({!r})'.format(self.__class__.__name__, self.series_id)
 
@@ -95,16 +96,17 @@ class Series(object):
 # IDEA should it inherit? maybe be part of series as list option
 class MultiSeries(Series):
     """docstring for MultiSeries."""
-    def __init__(self, multiseries):
-        super(MultiSeries, self).__init__(';'.join(multiseries))
+    def __init__(self, multiseries, **kwargs):
+        super(MultiSeries, self).__init__(';'.join(multiseries), **kwargs)
         self.multiseries = multiseries
-        if not isinstance(self.multiseries, list): # expects but got for clarity
+        if not isinstance(self.multiseries, list):
             raise EIAError('MultiSeries requires a list of series ids to be passed')
 
+    # TODO include kwarg?
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self.multiseries)
 
-# list option
+
 class Geoset(object):
     """docstring for Geoset."""
     def __init__(self, geoset_id, regions, xml=False):
@@ -112,6 +114,8 @@ class Geoset(object):
         self.geoset_id = geoset_id
         self.regions = regions
         self.xml = xml
+        if not isinstance(self.regions, list):
+            raise EIAError('Geoset requires a list of regions to be passed')
 
 
     def _url(self, path):
@@ -163,6 +167,10 @@ class Geoset(object):
         data = self._fetch(url)
 
         return data
+
+
+    def __repr__(self):
+        return '{}({!r}, {})'.format(self.__class__.__name__, self.geoset_id, self.regions)
 
 # list option
 # TODO finish

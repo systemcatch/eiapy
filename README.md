@@ -2,11 +2,15 @@
 
 Python 3 wrapper for the U.S. Energy Information Administration API.  
 
-Work in progress, many parts don't work. Everything likely to change.  
+Work in progress.
 
 For more details about the API go to the EIA's [Open Data](https://www.eia.gov/opendata/) page.
 
-Quick example
+Go [here](https://www.eia.gov/opendata/register.cfm#terms_of_service) to see the
+API terms of service and [here](https://www.eia.gov/about/copyrights_reuse.cfm)
+for an explanation of copyright and reuse of their data.
+
+## Quick example
 
 Get the last 5 datapoints for the electricity interchange between CAISO and Comision Federal de Electricidad.
 
@@ -42,9 +46,8 @@ Get the last 5 datapoints for the electricity interchange between CAISO and Comi
 - Clean up main
 - Docstrings
 - Add a license
-- Link to EIA's terms and conditions
 - Docs on how to use code, api key, examples
-- Notes on api behaviour
+- Notes on api behaviour (part done)
 - Make a pip package, maybe use pipenv
 - Define python versions supported. 3.5/3.6+?
 - Version numbering system
