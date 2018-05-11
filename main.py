@@ -6,8 +6,6 @@ from xml.etree import ElementTree
 
 
 # TODO how does the api handle errors
-# keep it simple and flexible
-# methods series, geoset, relation, category, series/categories, updates, search
 # check 200 needed?
 # NOTE allow just list to be returned?
 # TODO session suport?
@@ -20,11 +18,17 @@ class EIAError(Exception):
 
 
 class Series(object):
-    """docstring for Series."""
+    """
+    Create an object representing a single EIA data series.
+
+    :param series_id: string
+    :param xml: boolean specifying whether to output xml or json, defaults to json.
+    """
     def __init__(self, series_id, xml=False):
         super(Series, self).__init__()
         self.series_id = series_id
         self.xml = xml
+
 
     def _url(self, path):
         url = 'http://api.eia.gov/series/?api_key={}&series_id={}'.format(API_KEY, self.series_id)
@@ -48,8 +52,7 @@ class Series(object):
         data = self._fetch(url)
         return data
 
-    # num and start cannot coexist
-    # num & end are fine
+
     def last_from(self, n, end):
         """Returns the last n datapoints before a given date."""
         url = self._url("&num={}&end={}".format(n, end))
@@ -83,39 +86,50 @@ class Series(object):
 
 
     def categories(self):
+        """Find the categories the series is a member of."""
         url = self._url_categories()
         data = self._fetch(url)
         return data
 
 
-    # TODO include xml kwarg?
     def __repr__(self):
         return '{}({!r})'.format(self.__class__.__name__, self.series_id)
 
 
-# IDEA should it inherit? maybe be part of series as list option
 class MultiSeries(Series):
-    """docstring for MultiSeries."""
+    """
+    Create an object representing multiple EIA data series.
+
+    :param multiseries: list of strings, each refering to a series.
+    :param xml: boolean specifying whether to output xml or json, defaults to json.
+    """
     def __init__(self, multiseries, **kwargs):
         super(MultiSeries, self).__init__(';'.join(multiseries), **kwargs)
         self.multiseries = multiseries
         if not isinstance(self.multiseries, list):
             raise EIAError('MultiSeries requires a list of series ids to be passed')
+        if len(self.MultiSeries) > 100:
+            raise EIAError('The maximum number of series that can be requested is 100.')
 
-    # TODO include kwarg?
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self.multiseries)
 
 
 class Geoset(object):
-    """docstring for Geoset."""
+    """
+    Gets a set of the series belonging to the geoset_id and matching the list of regions.
+
+    :param geoset_id: integer >= 0.
+    :param regions: list of strings, each representing a region code.
+    :param xml: boolean specifying whether to output xml or json, defaults to json.
+    """
     def __init__(self, geoset_id, regions, xml=False):
         super(Geoset, self).__init__()
-        self.geoset_id = geoset_id
-        self.regions = regions
-        self.xml = xml
-        if not isinstance(self.regions, list):
+        if not isinstance(regions, list):
             raise EIAError('Geoset requires a list of regions to be passed')
+        self.geoset_id = geoset_id
+        self.regions = ';'.join(regions)
+        self.xml = xml
 
 
     def _url(self, path):
@@ -140,8 +154,7 @@ class Geoset(object):
         data = self._fetch(url)
         return data
 
-    # num and start cannot coexist
-    # num & end are fine
+
     def last_from(self, n, end):
         """Returns the last n datapoints before a given date."""
         url = self._url("&num={}&end={}".format(n, end))
@@ -172,8 +185,10 @@ class Geoset(object):
     def __repr__(self):
         return '{}({!r}, {})'.format(self.__class__.__name__, self.geoset_id, self.regions)
 
+
 # list option
 # TODO finish
+# NOTE currently broken
 class Relation(object):
     """docstring for Relation."""
     def __init__(self, relation_id, regions, xml=False):
@@ -183,6 +198,7 @@ class Relation(object):
         self.xml = xml
         #http://api.eia.gov/relation/?relation_id=rrrrrrr&region=region1&api_key=YOUR_API_KEY_HERE[&start=|&num=][&end=][&out=xml|json]
 
+#https://www.eia.gov/opendata/embed.cfm?type=relation&relation_id=SEDS.FFTCB.A&regions=USA&geoset_id=SEDS.FFTCB.A
     def _url(self, path):
         url = 'http://api.eia.gov/relation/?relation_id={}&regions={}&api_key={}'.format(self.relation_id, self.regions, API_KEY)
         return url + path
@@ -236,7 +252,12 @@ class Relation(object):
 
 
 class Category(object):
-    """docstring for Category."""
+    """
+    Gets name and category id for a single category, also lists child categories.
+
+    :param category_id: integer >= 0.
+    :param xml: boolean specifying whether to output xml or json, defaults to json.
+    """
     def __init__(self, category_id=None, xml=False):
         super(Category, self).__init__()
         self.category_id = category_id
@@ -264,20 +285,20 @@ class Category(object):
         return data
 
 
-    # TODO make sure this is properly done
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self.category_id)
 
 
-# should specify params in get? flexibility
 class Updates(object):
-    """docstring for Updates."""
-    def __init__(self, category_id=None, deep=False, rows=None, firstrow=None, xml=False):
+    """
+    Finds out which series in a Category are recently updated.
+
+    :param category_id: integer >= 0.
+    :param xml: boolean specifying whether to output xml or json, defaults to json.
+    """
+    def __init__(self, category_id=None, xml=False):
         super(Updates, self).__init__()
         self.category_id = category_id
-        self.deep = deep
-        self.rows = rows
-        self.firstrow = firstrow
         self.xml = xml
 
 
@@ -296,17 +317,21 @@ class Updates(object):
             json_data = req.json()
             return json_data
 
-    # max rows is 10000, should there be a max_rows flag?
     # naming
-    def get(self):
+    def get(self, deep=False, rows=None, firstrow=None):
         params = []
-        keys = self.__dict__
 
-        # BUG this fails for category 0
-        for k,v in keys.items():
-            if v:
-                param = '&{}={}'.format(k,v)
-                params.append(param)
+        if self.category_id is not None:
+            params.append('&category_id={}'.format(self.category_id))
+        if deep:
+            params.append('&deep=true')
+        if rows:
+            if rows > 10000:
+                raise EIAError('The maximum number of rows allowed is 10000.')
+            else:
+                params.append('&rows={}'.format(rows))
+        if firstrow:
+            params.append('&firstrow={}'.format(firstrow))
 
         options=''.join(params)
         url = self._url(options)
@@ -315,16 +340,23 @@ class Updates(object):
         return data
 
 
-    # TODO make sure this is properly done
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__)
+        return '{}({})'.format(self.__class__.__name__, self.category_id)
 
 
 class Search(object):
-    """docstring for Search."""
+    """
+    Allows searching by series_id, keyword or a date range.
+
+    :param search_term: string, one of [series_id, name, last_updated].
+    :param search_value: string search value that should align with the search_term.
+    :param xml: boolean specifying whether to output xml or json, defaults to json.
+    """
     def __init__(self, search_term, search_value, xml=False):
         super(Search, self).__init__()
         self.search_term = search_term
+        if self.search_term not in ['series_id', 'name', 'last_updated']:
+            raise EIAError('search_term must be one of [series_id, name, last_updated], got {}.'.format(self.search_term))
         self.search_value = search_value
         self.xml = xml
 
@@ -344,19 +376,19 @@ class Search(object):
             json_data = req.json()
             return json_data
 
-    # naming
+
     def find(self, page_num=None, rows_per_page=None):
         path = ''
         if page_num:
             path += '&page_num={}'.format(page_num)
         if rows_per_page:
             path += '&rows_per_page={}'.format(rows_per_page)
+
         url = self._url(path)
-        print(url)
         data = self._fetch(url)
+
         return data
 
 
-    # TODO make sure this is properly done
     def __repr__(self):
-        return '{}({}, {})'.format(self.__class__.__name__, self.search_term, self.search_value)
+        return '{}({!r},{!r})'.format(self.__class__.__name__, self.search_term, self.search_value)

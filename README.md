@@ -44,8 +44,6 @@ Get the last 5 datapoints for the electricity interchange between CAISO and Comi
 - Implement Relation
 - Finish other methods
 - Clean up main
-- Docstrings
-- Add a license
 - Docs on how to use code, api key, examples
 - Notes on api behaviour (part done)
 - Make a pip package, maybe use pipenv
@@ -55,6 +53,7 @@ Get the last 5 datapoints for the electricity interchange between CAISO and Comi
 
 ## Notes on API behaviour
 - When providing invalid time limits for a series data request data=[] is returned.
+- For data requests num & start cannot be used together but num & end can.
 - When an invalid series id is passed this is the response.
 ```
 # {'request': {'series_id': 'eba.ciso-cfe.id.', 'command': 'series', 'num': '5'},
