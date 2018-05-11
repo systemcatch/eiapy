@@ -2,7 +2,9 @@
 
 Python 3 wrapper for the U.S. Energy Information Administration API.  
 
-Work in progress.
+`pip install eiapy`
+
+Current PyPI version 0.1.0
 
 For more details about the API go to the EIA's [Open Data](https://www.eia.gov/opendata/) page.
 
@@ -12,12 +14,12 @@ for an explanation of copyright and reuse of their data.
 
 ## Quick example
 
-Get the last 5 datapoints for the electricity interchange between CAISO and Comision Federal de Electricidad.
+Get the last 5 datapoints for the electricity interchange between California and Mexico.
 
 ```python3
 >>> from eiapy import Series
->>> caiso_to_cfe = Series('EBA.CISO-CFE.ID.H')
->>> pprint(caiso_to_cfe.last(5))
+>>> cal_to_mex = Series('EBA.CISO-CFE.ID.H')
+>>> pprint(cal_to_mex.last(5))
 {'request': {'command': 'series', 'series_id': 'EBA.CISO-CFE.ID.H'},
  'series': [{'data': [['20180401T07Z', -11],
                       ['20180401T06Z', -16],
@@ -39,18 +41,6 @@ Get the last 5 datapoints for the electricity interchange between CAISO and Comi
 
 ```
 
-## TODO list
-
-- Implement Relation
-- Finish other methods
-- Clean up main
-- Docs on how to use code, api key, examples
-- Notes on api behaviour (part done)
-- Make a pip package, maybe use pipenv
-- Define python versions supported. 3.5/3.6+?
-- Version numbering system
-- Make code more DRY
-
 ## Notes on API behaviour
 - When providing invalid time limits for a series data request data=[] is returned.
 - For data requests num & start cannot be used together but num & end can.
@@ -59,3 +49,12 @@ Get the last 5 datapoints for the electricity interchange between CAISO and Comi
 # {'request': {'series_id': 'eba.ciso-cfe.id.', 'command': 'series', 'num': '5'},
 #  'data': {'error': 'invalid series_id. For key registration, documentation, and examples see https://www.eia.gov/developer/'}}
 ```
+
+## TODO list
+
+- Implement Relation query
+- Docs on how to use code, examples
+- Full section on getting an API key for Windows/Mac/Linux
+- Better setup and build using https://github.com/kennethreitz/setup.py
+- Notes on api behaviour (part done)
+- Better naming of some functions
