@@ -1,5 +1,5 @@
 # eiapy
-[![PyPI](https://img.shields.io/pypi/v/eiapy.svg)](https://pypi.org/project/eiapy/) [![PyPI - License](https://img.shields.io/pypi/l/eiapy.svg)](https://pypi.org/project/eiapy/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/eiapy.svg)](https://pypi.org/project/eiapy/)
+[![PyPI](https://img.shields.io/pypi/v/eiapy.svg)](https://pypi.org/project/eiapy/) [![PyPI - License](https://img.shields.io/pypi/l/eiapy.svg)](https://pypi.org/project/eiapy/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/eiapy.svg)](https://pypi.org/project/eiapy/)  
 Python 3 wrapper for the U.S. Energy Information Administration API.  
 
 ### Quick start
@@ -7,7 +7,7 @@ Python 3 wrapper for the U.S. Energy Information Administration API.
 pip install eiapy
 ```
 
-Get the last 5 datapoints for the electricity interchange between California and Mexico.
+Get the last 5 measurements of the electricity flow between California and Mexico.
 
 ```python3
 >>> from eiapy import Series
@@ -40,8 +40,8 @@ Go [here](https://www.eia.gov/opendata/register.cfm#terms_of_service) to see the
 API terms of service and [here](https://www.eia.gov/about/copyrights_reuse.cfm)
 for an explanation of copyright and reuse of their data.
 
-## Notes on API behaviour
-- When providing invalid time limits for a series data request data=[] is returned.
+### Notes on API behaviour
+- When providing invalid time limits for a series data request an empty data list is returned.
 - For data requests num & start cannot be used together but num & end can.
 - When an invalid series id is passed this is the response.
 ```python3
