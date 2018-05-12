@@ -1,5 +1,6 @@
 # eiapy
 [![PyPI](https://img.shields.io/pypi/v/eiapy.svg)](https://pypi.org/project/eiapy/) [![PyPI - License](https://img.shields.io/pypi/l/eiapy.svg)](https://pypi.org/project/eiapy/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/eiapy.svg)](https://pypi.org/project/eiapy/)  
+
 Python 3 wrapper for the U.S. Energy Information Administration API.  
 
 ### Quick start
@@ -34,7 +35,7 @@ Get the last 5 measurements of the electricity flow between California and Mexic
 
 ```
 
-For more details about the API go to the EIA's [Open Data](https://www.eia.gov/opendata/) page.
+For more details about the API go to the EIA's [Open Data](https://www.eia.gov/opendata/) page. To find interesting data (and identifiers) [browse the data sets](https://www.eia.gov/opendata/qb.php).
 
 Go [here](https://www.eia.gov/opendata/register.cfm#terms_of_service) to see the
 API terms of service and [here](https://www.eia.gov/about/copyrights_reuse.cfm)
