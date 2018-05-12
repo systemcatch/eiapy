@@ -1,25 +1,18 @@
 # eiapy
-
+[![PyPI](https://img.shields.io/pypi/v/eiapy.svg)](https://pypi.org/project/eiapy/) [![PyPI - License](https://img.shields.io/pypi/l/eiapy.svg)](https://pypi.org/project/eiapy/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/eiapy.svg)](https://pypi.org/project/eiapy/)
 Python 3 wrapper for the U.S. Energy Information Administration API.  
 
-`pip install eiapy`
-
-Current PyPI version 0.1.0
-
-For more details about the API go to the EIA's [Open Data](https://www.eia.gov/opendata/) page.
-
-Go [here](https://www.eia.gov/opendata/register.cfm#terms_of_service) to see the
-API terms of service and [here](https://www.eia.gov/about/copyrights_reuse.cfm)
-for an explanation of copyright and reuse of their data.
-
-## Quick example
+### Quick start
+```bash
+pip install eiapy
+```
 
 Get the last 5 datapoints for the electricity interchange between California and Mexico.
 
 ```python3
 >>> from eiapy import Series
 >>> cal_to_mex = Series('EBA.CISO-CFE.ID.H')
->>> pprint(cal_to_mex.last(5))
+>>> cal_to_mex.last(5)
 {'request': {'command': 'series', 'series_id': 'EBA.CISO-CFE.ID.H'},
  'series': [{'data': [['20180401T07Z', -11],
                       ['20180401T06Z', -16],
@@ -41,11 +34,18 @@ Get the last 5 datapoints for the electricity interchange between California and
 
 ```
 
+For more details about the API go to the EIA's [Open Data](https://www.eia.gov/opendata/) page.
+
+Go [here](https://www.eia.gov/opendata/register.cfm#terms_of_service) to see the
+API terms of service and [here](https://www.eia.gov/about/copyrights_reuse.cfm)
+for an explanation of copyright and reuse of their data.
+
 ## Notes on API behaviour
 - When providing invalid time limits for a series data request data=[] is returned.
 - For data requests num & start cannot be used together but num & end can.
 - When an invalid series id is passed this is the response.
-```
-# {'request': {'series_id': 'eba.ciso-cfe.id.', 'command': 'series', 'num': '5'},
-#  'data': {'error': 'invalid series_id. For key registration, documentation, and examples see https://www.eia.gov/developer/'}}
+```python3
+{'request': {'series_id': 'eba.ciso-cfe.id.', 'command': 'series', 'num': '5'},
+ 'data': {'error': 'invalid series_id. For key registration, documentation, and
+ examples see https://www.eia.gov/developer/'}}
 ```
