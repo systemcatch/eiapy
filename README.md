@@ -49,12 +49,3 @@ Get the last 5 datapoints for the electricity interchange between California and
 # {'request': {'series_id': 'eba.ciso-cfe.id.', 'command': 'series', 'num': '5'},
 #  'data': {'error': 'invalid series_id. For key registration, documentation, and examples see https://www.eia.gov/developer/'}}
 ```
-
-## TODO list
-
-- Implement Relation query
-- Docs on how to use code, examples
-- Full section on getting an API key for Windows/Mac/Linux
-- Better setup and build using https://github.com/kennethreitz/setup.py
-- Notes on api behaviour (part done)
-- Better naming of some functions
