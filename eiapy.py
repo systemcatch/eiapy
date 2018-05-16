@@ -1,6 +1,6 @@
 #usr/bin/env python3
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 import os
 import requests
@@ -10,7 +10,6 @@ from xml.etree import ElementTree
 # TODO how does the api handle errors
 # check 200 needed?
 # NOTE allow just list to be returned?
-# TODO session suport?
 # IDEA kwargs for future proofing
 
 API_KEY = os.environ['EIA_KEY']

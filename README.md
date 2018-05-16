@@ -50,3 +50,10 @@ for an explanation of copyright and reuse of their data.
  'data': {'error': 'invalid series_id. For key registration, documentation, and
  examples see https://www.eia.gov/developer/'}}
 ```
+
+### Changelog
+**0.1.1**  
+- Started using requests session functionality to improve performance.
+- Fixed a mistake in the MultiSeries class that stopped it working entirely.
+- Added a version attribute to the package.
+- Overhaul of readme.
