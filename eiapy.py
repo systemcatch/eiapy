@@ -1,5 +1,7 @@
 #usr/bin/env python3
 
+__version__ = "0.1.0"
+
 import os
 import requests
 from xml.etree import ElementTree
@@ -23,11 +25,13 @@ class Series(object):
 
     :param series_id: string
     :param xml: boolean specifying whether to output xml or json, defaults to json.
+    :param session: object allowing an existing session to be passed, defaults to None.
     """
-    def __init__(self, series_id, xml=False):
+    def __init__(self, series_id, xml=False, session=None):
         super(Series, self).__init__()
         self.series_id = series_id
         self.xml = xml
+        self.session = session
 
 
     def _url(self, path):
@@ -36,12 +40,13 @@ class Series(object):
 
 
     def _fetch(self, url):
+        s = self.session or requests.Session()
         if self.xml:
-            req = requests.get(url+'&out=xml')
+            req = s.get(url+'&out=xml')
             xml_data = ElementTree.fromstring(req.content)
             return xml_data
         else:
-            req = requests.get(url)
+            req = s.get(url)
             json_data = req.json()
             return json_data
 
@@ -102,13 +107,14 @@ class MultiSeries(Series):
 
     :param multiseries: list of strings, each refering to a series.
     :param xml: boolean specifying whether to output xml or json, defaults to json.
+    :param session: object allowing an existing session to be passed, defaults to None.
     """
     def __init__(self, multiseries, **kwargs):
         super(MultiSeries, self).__init__(';'.join(multiseries), **kwargs)
         self.multiseries = multiseries
         if not isinstance(self.multiseries, list):
             raise EIAError('MultiSeries requires a list of series ids to be passed')
-        if len(self.MultiSeries) > 100:
+        if len(self.multiseries) > 100:
             raise EIAError('The maximum number of series that can be requested is 100.')
 
     def __repr__(self):
@@ -122,14 +128,16 @@ class Geoset(object):
     :param geoset_id: integer >= 0.
     :param regions: list of strings, each representing a region code.
     :param xml: boolean specifying whether to output xml or json, defaults to json.
+    :param session: object allowing an existing session to be passed, defaults to None.
     """
-    def __init__(self, geoset_id, regions, xml=False):
+    def __init__(self, geoset_id, regions, xml=False, session=None):
         super(Geoset, self).__init__()
         if not isinstance(regions, list):
             raise EIAError('Geoset requires a list of regions to be passed')
         self.geoset_id = geoset_id
         self.regions = ';'.join(regions)
         self.xml = xml
+        self.session = session
 
 
     def _url(self, path):
@@ -138,12 +146,13 @@ class Geoset(object):
 
 
     def _fetch(self, url):
+        s = self.session or requests.Session()
         if self.xml:
-            req = requests.get(url+'&out=xml')
+            req = s.get(url+'&out=xml')
             xml_data = ElementTree.fromstring(req.content)
             return xml_data
         else:
-            req = requests.get(url)
+            req = s.get(url)
             json_data = req.json()
             return json_data
 
@@ -191,11 +200,12 @@ class Geoset(object):
 # NOTE currently broken
 class Relation(object):
     """docstring for Relation."""
-    def __init__(self, relation_id, regions, xml=False):
+    def __init__(self, relation_id, regions, xml=False, session=None):
         super(Relation, self).__init__()
         self.relation_id = relation_id
         self.regions =  regions
         self.xml = xml
+        self.session = session
         #http://api.eia.gov/relation/?relation_id=rrrrrrr&region=region1&api_key=YOUR_API_KEY_HERE[&start=|&num=][&end=][&out=xml|json]
 
 #https://www.eia.gov/opendata/embed.cfm?type=relation&relation_id=SEDS.FFTCB.A&regions=USA&geoset_id=SEDS.FFTCB.A
@@ -205,13 +215,14 @@ class Relation(object):
 
 
     def _fetch(self, url):
+        s = self.session or requests.Session()
         if self.xml:
-            req = requests.get(url+'&out=xml')
+            req = s.get(url+'&out=xml')
             xml_data = ElementTree.fromstring(req.content)
             return xml_data
         else:
             print(url)
-            req = requests.get(url)
+            req = s.get(url)
             json_data = req.json()
             return json_data
 
@@ -257,20 +268,23 @@ class Category(object):
 
     :param category_id: integer >= 0.
     :param xml: boolean specifying whether to output xml or json, defaults to json.
+    :param session: object allowing an existing session to be passed, defaults to None.
     """
-    def __init__(self, category_id=None, xml=False):
+    def __init__(self, category_id=None, xml=False, session=None):
         super(Category, self).__init__()
         self.category_id = category_id
         self.xml = xml
+        self.session = session
 
 
     def _fetch(self, url):
+        s = self.session or requests.Session()
         if self.xml:
-            req = requests.get(url+'&out=xml')
+            req = s.get(url+'&out=xml')
             xml_data = ElementTree.fromstring(req.content)
             return xml_data
         else:
-            req = requests.get(url)
+            req = s.get(url)
             json_data = req.json()
             return json_data
 
@@ -295,11 +309,13 @@ class Updates(object):
 
     :param category_id: integer >= 0.
     :param xml: boolean specifying whether to output xml or json, defaults to json.
+    :param session: object allowing an existing session to be passed, defaults to None.
     """
-    def __init__(self, category_id=None, xml=False):
+    def __init__(self, category_id=None, xml=False, session=None):
         super(Updates, self).__init__()
         self.category_id = category_id
         self.xml = xml
+        self.session = session
 
 
     def _url(self, path):
@@ -308,12 +324,13 @@ class Updates(object):
 
 
     def _fetch(self, url):
+        s = self.session or requests.Session()
         if self.xml:
-            req = requests.get(url+'&out=xml')
+            req = s.get(url+'&out=xml')
             xml_data = ElementTree.fromstring(req.content)
             return xml_data
         else:
-            req = requests.get(url)
+            req = s.get(url)
             json_data = req.json()
             return json_data
 
@@ -351,14 +368,16 @@ class Search(object):
     :param search_term: string, one of [series_id, name, last_updated].
     :param search_value: string search value that should align with the search_term.
     :param xml: boolean specifying whether to output xml or json, defaults to json.
+    :param session: object allowing an existing session to be passed, defaults to None.
     """
-    def __init__(self, search_term, search_value, xml=False):
+    def __init__(self, search_term, search_value, xml=False, session=None):
         super(Search, self).__init__()
         self.search_term = search_term
         if self.search_term not in ['series_id', 'name', 'last_updated']:
             raise EIAError('search_term must be one of [series_id, name, last_updated], got {}.'.format(self.search_term))
         self.search_value = search_value
         self.xml = xml
+        self.session = session
 
 
     def _url(self, path):
@@ -367,12 +386,13 @@ class Search(object):
 
 
     def _fetch(self, url):
+        s = self.session or requests.Session()
         if self.xml:
-            req = requests.get(url+'&out=xml')
+            req = s.get(url+'&out=xml')
             xml_data = ElementTree.fromstring(req.content)
             return xml_data
         else:
-            req = requests.get(url)
+            req = s.get(url)
             json_data = req.json()
             return json_data
 
