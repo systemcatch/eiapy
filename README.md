@@ -52,6 +52,11 @@ for an explanation of copyright and reuse of their data.
 ```
 
 ### Changelog
+**0.1.2**
+- Rename several methods for extra clarity.
+- data -> get_data
+- get -> get_updates
+
 **0.1.1**  
 - Started using requests session functionality to improve performance.
 - Fixed a mistake in the MultiSeries class that stopped it working entirely.
