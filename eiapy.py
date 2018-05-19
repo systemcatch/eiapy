@@ -64,8 +64,8 @@ class Series(object):
         return data
 
     #raise on no data?
-    #naming error handling
-    def data(self, start=None, end=None, all_data=False):
+    #error handling
+    def get_data(self, start=None, end=None, all_data=False):
         if start and end:
             limits = '&start={}&end={}'.format(start, end)
         elif start:
@@ -170,8 +170,7 @@ class Geoset(object):
         return data
 
     #raise on no data?
-    #naming
-    def data(self, start=None, end=None, all_data=False):
+    def get_data(self, start=None, end=None, all_data=False):
         if start and end:
             limits = '&start={}&end={}'.format(start, end)
         elif start:
@@ -232,8 +231,7 @@ class Relation(object):
         data = self._fetch(url)
         return data
 
-    # num and start cannot coexist
-    # num & end are fine
+
     def last_from(self, n, end):
         """Returns the last n datapoints before a given date."""
         url = self._url("&num={}&end={}".format(n, end))
@@ -241,8 +239,8 @@ class Relation(object):
         return data
 
     #raise on no data?
-    #naming error handling
-    def data(self, start=None, end=None, all_data=False):
+    #error handling
+    def get_data(self, start=None, end=None, all_data=False):
         if start and end:
             limits = '&start={}&end={}'.format(start, end)
         elif start:
@@ -333,8 +331,8 @@ class Updates(object):
             json_data = req.json()
             return json_data
 
-    # naming
-    def get(self, deep=False, rows=None, firstrow=None):
+
+    def get_updates(self, deep=False, rows=None, firstrow=None):
         params = []
 
         if self.category_id is not None:
