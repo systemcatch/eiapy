@@ -41,6 +41,22 @@ Go [here](https://www.eia.gov/opendata/register.cfm#terms_of_service) to see the
 API terms of service and [here](https://www.eia.gov/about/copyrights_reuse.cfm)
 for an explanation of copyright and reuse of their data.
 
+### Setting up your API key
+An API key is needed to access the EIA's data, you can get one [here](https://www.eia.gov/opendata/register.php). eiapy needs this key to be manually set in the operating system environmental variables.
+
+**Mac & Linux**  
+Open a terminal and enter the following;
+```bash
+export EIA_KEY=type_your_api_key_here
+```
+To set it permanently follow the instructions on this [stackexchange question](https://unix.stackexchange.com/questions/117467/how-to-permanently-set-environmental-variables).
+
+**Windows**  
+Open a Command Prompt and enter the following;
+```bat
+setx EIA_KEY "type_your_api_key_within_the_quotes"
+```
+
 ### Notes on API behaviour
 - When providing invalid time limits for a series data request an empty data list is returned.
 - For data requests num & start cannot be used together but num & end can.
