@@ -44,14 +44,14 @@ for an explanation of copyright and reuse of their data.
 ### Setting up your API key
 An API key is needed to access the EIA's data, you can get one [here](https://www.eia.gov/opendata/register.php). eiapy needs this key to be manually set in the operating system environmental variables.
 
-**Mac & Linux**
+**Mac & Linux**  
 Open a terminal and enter the following;
 ```bash
 export EIA_KEY=type_your_api_key_here
 ```
-To set it permanently follow the instructions on [stackexchange](https://unix.stackexchange.com/questions/117467/how-to-permanently-set-environmental-variables)
+To set it permanently follow the instructions on this [stackexchange question](https://unix.stackexchange.com/questions/117467/how-to-permanently-set-environmental-variables).
 
-**Windows**
+**Windows**  
 Open a Command Prompt and enter the following;
 ```bat
 setx EIA_KEY "type_your_api_key_within_the_quotes"
