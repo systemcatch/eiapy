@@ -35,6 +35,8 @@ Get the last 5 measurements of the electricity flow between California and Mexic
 
 ```
 
+Further examples can be found [in this gist](https://gist.github.com/systemcatch/019cf50302093b9b51838c62b99623df).
+
 For more details about the API go to the EIA's [Open Data](https://www.eia.gov/opendata/) page. To find interesting data (and identifiers) [browse the data sets](https://www.eia.gov/opendata/qb.php).
 
 Go [here](https://www.eia.gov/opendata/register.cfm#terms_of_service) to see the
