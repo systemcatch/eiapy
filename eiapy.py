@@ -362,23 +362,19 @@ class Search(object):
     """
     Allows searching by series_id, keyword or a date range.
 
-    :param search_term: string, one of [series_id, name, last_updated].
-    :param search_value: string search value that should align with the search_term.
+    :param search_value: string that should be a series_id, ISO8601 time range or query term.
     :param xml: boolean specifying whether to output xml or json, defaults to json.
     :param session: object allowing an existing session to be passed, defaults to None.
     """
-    def __init__(self, search_term, search_value, xml=False, session=None):
+    def __init__(self, search_value, xml=False, session=None):
         super(Search, self).__init__()
-        self.search_term = search_term
-        if self.search_term not in ['series_id', 'name', 'last_updated']:
-            raise EIAError('search_term must be one of [series_id, name, last_updated], got {}.'.format(self.search_term))
         self.search_value = search_value
         self.xml = xml
         self.session = session
 
 
     def _url(self, path):
-        url = 'http://api.eia.gov/search/?search_term={}&search_value={}'.format(self.search_term, self.search_value)
+        url = 'http://api.eia.gov/search/?search_value={}'.format(self.search_value)
         return url + path
 
 
@@ -394,8 +390,8 @@ class Search(object):
             return json_data
 
 
-    def find(self, page_num=None, rows_per_page=None):
-        path = ''
+    def _find(self, search_term, page_num=None, rows_per_page=None):
+        path = '&search_term={}'.format(search_term)
         if page_num:
             path += '&page_num={}'.format(page_num)
         if rows_per_page:
@@ -404,6 +400,25 @@ class Search(object):
         url = self._url(path)
         data = self._fetch(url)
 
+        return data
+
+
+    def by_last_updated(self, page_num=None, rows_per_page=None):
+        """
+        search_value format must be between 2 ISO8601 timestamps enclosed in square brackets.
+        e.g. '[2017-01-01T00:00:00Z TO 2018-01-01T23:59:59Z]'
+        """
+        data = self._find('last_updated', page_num, rows_per_page)
+        return data
+
+
+    def by_name(self, page_num=None, rows_per_page=None):
+        data = self._find('name', page_num, rows_per_page)
+        return data
+
+
+    def by_series_id(self, page_num=None, rows_per_page=None):
+        data = self._find('series_id', page_num, rows_per_page)
         return data
 
 
