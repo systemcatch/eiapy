@@ -70,6 +70,11 @@ setx EIA_KEY "type_your_api_key_within_the_quotes"
 ```
 
 ### Changelog
+**0.1.3**
+- Simplify construction and use of the Search class.
+- Explain how to set up the API key.
+- Added gist of examples to readme.
+
 **0.1.2**
 - Rename several methods for extra clarity.
 - data -> get_data
