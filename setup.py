@@ -14,13 +14,14 @@ with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='eiapy',
-    version='0.1.3',
+    version='0.1.4',
     description='A simple wrapper for the EIA API.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     license='MIT',
     py_modules=['eiapy'],
     python_requires='>=3',
+    setup_requires=['wheel'],
     install_requires=['requests'],
     author='Chris Brown',
     author_email='cebrown999@gmail.com',

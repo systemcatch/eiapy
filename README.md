@@ -72,6 +72,11 @@ setx EIA_KEY "type_your_api_key_within_the_quotes"
 ```
 
 ### Changelog
+**0.1.4**
+- Fixed broken Search `repr`.
+- Added Python 3.7 to supported versions.
+- Mention real-time grid in readme.
+
 **0.1.3**
 - Simplify construction and use of the Search class.
 - Explain how to set up the API key.
