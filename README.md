@@ -37,7 +37,9 @@ Get the last 5 measurements of the electricity flow between California and Mexic
 
 Further examples can be found [in this gist](https://gist.github.com/systemcatch/019cf50302093b9b51838c62b99623df).
 
-For more details about the API go to the EIA's [Open Data](https://www.eia.gov/opendata/) page. To find interesting data (and identifiers) [browse the data sets](https://www.eia.gov/opendata/qb.php).
+To find more details about the API go to the EIA's [Open Data](https://www.eia.gov/opendata/) page. To find interesting data (and identifiers) [browse the data sets](https://www.eia.gov/opendata/qb.php).
+
+For specific information about the [real-time grid display](https://www.eia.gov/beta/electricity/gridmonitor/dashboard/electric_overview/US48/US48) please see [this guide](https://www.eia.gov/realtime_grid/docs/userguide-knownissues.pdf).
 
 Go [here](https://www.eia.gov/opendata/register.cfm#terms_of_service) to see the
 API terms of service and [here](https://www.eia.gov/about/copyrights_reuse.cfm)
