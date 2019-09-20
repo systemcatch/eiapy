@@ -7,9 +7,7 @@ import requests
 from xml.etree import ElementTree
 
 
-# TODO how does the api handle errors
-# check 200 needed?
-# NOTE allow just list to be returned?
+# IDEA allow just data to be returned?
 # IDEA kwargs for future proofing
 
 API_KEY = os.environ['EIA_KEY']
@@ -63,8 +61,7 @@ class Series(object):
         data = self._fetch(url)
         return data
 
-    #raise on no data?
-    #error handling
+
     def get_data(self, start=None, end=None, all_data=False):
         if start and end:
             limits = '&start={}&end={}'.format(start, end)
@@ -169,7 +166,7 @@ class Geoset(object):
         data = self._fetch(url)
         return data
 
-    #raise on no data?
+
     def get_data(self, start=None, end=None, all_data=False):
         if start and end:
             limits = '&start={}&end={}'.format(start, end)
@@ -193,7 +190,6 @@ class Geoset(object):
         return '{}({!r}, {})'.format(self.__class__.__name__, self.geoset_id, self.regions)
 
 
-# list option
 # TODO finish
 # NOTE currently broken
 class Relation(object):
@@ -423,4 +419,4 @@ class Search(object):
 
 
     def __repr__(self):
-        return '{}({!r},{!r})'.format(self.__class__.__name__, self.search_term, self.search_value)
+        return '{}({!r})'.format(self.__class__.__name__, self.search_value)
