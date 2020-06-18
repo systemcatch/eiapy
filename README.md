@@ -70,7 +70,7 @@ setx EIA_KEY "type_your_api_key_within_the_quotes"
  'data': {'error': 'invalid series_id. For key registration, documentation, and
  examples see https://www.eia.gov/developer/'}}
 ```
-- The API expects expects timestamps in ISO 8601 format (YYYYMMDDTHHZ) with Z meaning UTC, [bad timestamps](https://github.com/systemcatch/eiapy/issues/16) will not raise errors.
+- The API expects timestamps in ISO 8601 format (YYYYMMDDTHHZ) with Z meaning UTC, [bad timestamps](https://github.com/systemcatch/eiapy/issues/16) will not raise errors.
 
 ### Changelog
 **0.1.4**
