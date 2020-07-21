@@ -1,4 +1,4 @@
-#usr/bin/env python3
+#!usr/bin/env python3
 
 __version__ = "0.1.4"
 
@@ -6,11 +6,12 @@ import os
 import requests
 from xml.etree import ElementTree
 
+try:
+    API_KEY = os.environ['EIA_KEY']
+except KeyError:
+    raise RuntimeError("eiapy requires an api key to function, read "
+                       "https://github.com/systemcatch/eiapy#setting-up-your-api-key to solve this")
 
-# IDEA allow just data to be returned?
-# IDEA kwargs for future proofing
-
-API_KEY = os.environ['EIA_KEY']
 
 class EIAError(Exception):
     pass
@@ -30,11 +31,9 @@ class Series(object):
         self.xml = xml
         self.session = session
 
-
     def _url(self, path):
         url = 'http://api.eia.gov/series/?api_key={}&series_id={}'.format(API_KEY, self.series_id)
         return url + path
-
 
     def _fetch(self, url):
         s = self.session or requests.Session()
@@ -47,20 +46,17 @@ class Series(object):
             json_data = req.json()
             return json_data
 
-
     def last(self, n):
         """Returns the last n datapoints."""
         url = self._url('&num={}'.format(n))
         data = self._fetch(url)
         return data
 
-
     def last_from(self, n, end):
         """Returns the last n datapoints before a given date."""
         url = self._url("&num={}&end={}".format(n, end))
         data = self._fetch(url)
         return data
-
 
     def get_data(self, start=None, end=None, all_data=False):
         if start and end:
@@ -80,18 +76,15 @@ class Series(object):
 
         return data
 
-
     def _url_categories(self):
         url = 'http://api.eia.gov/series/categories/?series_id={}&api_key={}'.format(self.series_id, API_KEY)
         return url
-
 
     def categories(self):
         """Find the categories the series is a member of."""
         url = self._url_categories()
         data = self._fetch(url)
         return data
-
 
     def __repr__(self):
         return '{}({!r})'.format(self.__class__.__name__, self.series_id)
@@ -101,7 +94,7 @@ class MultiSeries(Series):
     """
     Create an object representing multiple EIA data series.
 
-    :param multiseries: list of strings, each refering to a series.
+    :param multiseries: list of strings, each referring to a series.
     :param xml: boolean specifying whether to output xml or json, defaults to json.
     :param session: object allowing an existing session to be passed, defaults to None.
     """
@@ -135,11 +128,9 @@ class Geoset(object):
         self.xml = xml
         self.session = session
 
-
     def _url(self, path):
         url = 'http://api.eia.gov/geoset/?geoset_id={}&regions={}&api_key={}'.format(self.geoset_id, self.regions, API_KEY)
         return url + path
-
 
     def _fetch(self, url):
         s = self.session or requests.Session()
@@ -152,20 +143,17 @@ class Geoset(object):
             json_data = req.json()
             return json_data
 
-
     def last(self, n):
         """Returns the last n datapoints."""
         url = self._url('&num={}'.format(n))
         data = self._fetch(url)
         return data
 
-
     def last_from(self, n, end):
         """Returns the last n datapoints before a given date."""
         url = self._url("&num={}&end={}".format(n, end))
         data = self._fetch(url)
         return data
-
 
     def get_data(self, start=None, end=None, all_data=False):
         if start and end:
@@ -185,74 +173,70 @@ class Geoset(object):
 
         return data
 
-
     def __repr__(self):
         return '{}({!r}, {})'.format(self.__class__.__name__, self.geoset_id, self.regions)
 
 
-# TODO finish
-# NOTE currently broken
-class Relation(object):
-    """docstring for Relation."""
-    def __init__(self, relation_id, regions, xml=False, session=None):
-        super(Relation, self).__init__()
-        self.relation_id = relation_id
-        self.regions =  regions
-        self.xml = xml
-        self.session = session
-        #http://api.eia.gov/relation/?relation_id=rrrrrrr&region=region1&api_key=YOUR_API_KEY_HERE[&start=|&num=][&end=][&out=xml|json]
-
-#https://www.eia.gov/opendata/embed.cfm?type=relation&relation_id=SEDS.FFTCB.A&regions=USA&geoset_id=SEDS.FFTCB.A
-    def _url(self, path):
-        url = 'http://api.eia.gov/relation/?relation_id={}&regions={}&api_key={}'.format(self.relation_id, self.regions, API_KEY)
-        return url + path
-
-
-    def _fetch(self, url):
-        s = self.session or requests.Session()
-        if self.xml:
-            req = s.get(url+'&out=xml')
-            xml_data = ElementTree.fromstring(req.content)
-            return xml_data
-        else:
-            print(url)
-            req = s.get(url)
-            json_data = req.json()
-            return json_data
-
-
-    def last(self, n):
-        """Returns the last n datapoints."""
-        url = self._url('&num={}'.format(n))
-        data = self._fetch(url)
-        return data
-
-
-    def last_from(self, n, end):
-        """Returns the last n datapoints before a given date."""
-        url = self._url("&num={}&end={}".format(n, end))
-        data = self._fetch(url)
-        return data
-
-    #raise on no data?
-    #error handling
-    def get_data(self, start=None, end=None, all_data=False):
-        if start and end:
-            limits = '&start={}&end={}'.format(start, end)
-        elif start:
-            limits = '&start={}'.format(start)
-        elif end:
-            limits = '&end={}'.format(end)
-        elif all_data:
-            # This will return every datapoint in the series!
-            limits = ''
-        else:
-            raise EIAError('No time limits given for data request, pass all_data=True to get every datapoint in the series.')
-
-        url = self._url(limits)
-        data = self._fetch(url)
-
-        return data
+# NOTE currently broken at the EIA end
+# class Relation(object):
+#     """docstring for Relation."""
+#     def __init__(self, relation_id, regions, xml=False, session=None):
+#         super(Relation, self).__init__()
+#         raise RuntimeError('The Relation class is not implemented due to the EIA relation api not functioning')
+#         self.relation_id = relation_id
+#         self.regions =  regions
+#         self.xml = xml
+#         self.session = session
+#         #http://api.eia.gov/relation/?relation_id=rrrrrrr&region=region1&api_key=YOUR_API_KEY_HERE[&start=|&num=][&end=][&out=xml|json]
+#
+# #https://www.eia.gov/opendata/embed.cfm?type=relation&relation_id=SEDS.FFTCB.A&regions=USA&geoset_id=SEDS.FFTCB.A
+#     def _url(self, path):
+#         url = 'http://api.eia.gov/relation/?relation_id={}&regions={}&api_key={}'.format(self.relation_id, self.regions, API_KEY)
+#         return url + path
+#
+#     def _fetch(self, url):
+#         s = self.session or requests.Session()
+#         if self.xml:
+#             req = s.get(url+'&out=xml')
+#             xml_data = ElementTree.fromstring(req.content)
+#             return xml_data
+#         else:
+#             print(url)
+#             req = s.get(url)
+#             json_data = req.json()
+#             return json_data
+#
+#     def last(self, n):
+#         """Returns the last n datapoints."""
+#         url = self._url('&num={}'.format(n))
+#         data = self._fetch(url)
+#         return data
+#
+#     def last_from(self, n, end):
+#         """Returns the last n datapoints before a given date."""
+#         url = self._url("&num={}&end={}".format(n, end))
+#         data = self._fetch(url)
+#         return data
+#
+#     #raise on no data?
+#     #error handling
+#     def get_data(self, start=None, end=None, all_data=False):
+#         if start and end:
+#             limits = '&start={}&end={}'.format(start, end)
+#         elif start:
+#             limits = '&start={}'.format(start)
+#         elif end:
+#             limits = '&end={}'.format(end)
+#         elif all_data:
+#             # This will return every datapoint in the series!
+#             limits = ''
+#         else:
+#             raise EIAError('No time limits given for data request, pass all_data=True to get every datapoint in the series.')
+#
+#         url = self._url(limits)
+#         data = self._fetch(url)
+#
+#         return data
 
 
 class Category(object):
@@ -269,7 +253,6 @@ class Category(object):
         self.xml = xml
         self.session = session
 
-
     def _fetch(self, url):
         s = self.session or requests.Session()
         if self.xml:
@@ -281,7 +264,6 @@ class Category(object):
             json_data = req.json()
             return json_data
 
-
     def get_info(self):
         if self.category_id is not None:
             url = 'http://api.eia.gov/category/?api_key={}&category_id={}'.format(API_KEY, self.category_id)
@@ -290,7 +272,6 @@ class Category(object):
 
         data = self._fetch(url)
         return data
-
 
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self.category_id)
@@ -310,11 +291,9 @@ class Updates(object):
         self.xml = xml
         self.session = session
 
-
     def _url(self, path):
         url = 'http://api.eia.gov/updates/?api_key={}'.format(API_KEY)
         return url + path
-
 
     def _fetch(self, url):
         s = self.session or requests.Session()
@@ -326,7 +305,6 @@ class Updates(object):
             req = s.get(url)
             json_data = req.json()
             return json_data
-
 
     def get_updates(self, deep=False, rows=None, firstrow=None):
         params = []
@@ -343,12 +321,11 @@ class Updates(object):
         if firstrow:
             params.append('&firstrow={}'.format(firstrow))
 
-        options=''.join(params)
+        options = ''.join(params)
         url = self._url(options)
         data= self._fetch(url)
 
         return data
-
 
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self.category_id)
@@ -368,11 +345,9 @@ class Search(object):
         self.xml = xml
         self.session = session
 
-
     def _url(self, path):
         url = 'http://api.eia.gov/search/?search_value={}'.format(self.search_value)
         return url + path
-
 
     def _fetch(self, url):
         s = self.session or requests.Session()
@@ -384,7 +359,6 @@ class Search(object):
             req = s.get(url)
             json_data = req.json()
             return json_data
-
 
     def _find(self, search_term, page_num=None, rows_per_page=None):
         path = '&search_term={}'.format(search_term)
@@ -398,7 +372,6 @@ class Search(object):
 
         return data
 
-
     def by_last_updated(self, page_num=None, rows_per_page=None):
         """
         search_value format must be between 2 ISO8601 timestamps enclosed in square brackets.
@@ -407,16 +380,13 @@ class Search(object):
         data = self._find('last_updated', page_num, rows_per_page)
         return data
 
-
     def by_name(self, page_num=None, rows_per_page=None):
         data = self._find('name', page_num, rows_per_page)
         return data
 
-
     def by_series_id(self, page_num=None, rows_per_page=None):
         data = self._find('series_id', page_num, rows_per_page)
         return data
-
 
     def __repr__(self):
         return '{}({!r})'.format(self.__class__.__name__, self.search_value)
