@@ -73,6 +73,12 @@ setx EIA_KEY "type_your_api_key_within_the_quotes"
 - The API expects timestamps in ISO 8601 format (YYYYMMDDTHHZ) with Z meaning UTC, [bad timestamps](https://github.com/systemcatch/eiapy/issues/16) will not raise errors.
 
 ### Changelog
+**0.1.5**
+- Added Python 3.8 to supported versions.
+- Updated readme with advice about bad timestamps.
+- Disabled broken Relation class.
+- Made handling of no api key more human friendly.
+
 **0.1.4**
 - Fixed broken Search `repr`.
 - Added Python 3.7 to supported versions.
