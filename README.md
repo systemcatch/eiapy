@@ -73,6 +73,10 @@ setx EIA_KEY "type_your_api_key_within_the_quotes"
 - The API expects timestamps in ISO 8601 format (YYYYMMDDTHHZ) with Z meaning UTC, [bad timestamps](https://github.com/systemcatch/eiapy/issues/16) will not raise errors.
 
 ### Changelog
+**0.1.6**
+- Changed URLs to https as http is no longer supported by EIA.
+- Added python 3.9 and 3.10 to classifiers, removed 3.5.
+
 **0.1.5**
 - Added Python 3.8 to supported versions.
 - Updated readme with advice about bad timestamps.
