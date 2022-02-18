@@ -14,7 +14,7 @@ with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='eiapy',
-    version='0.1.5',
+    version='0.1.6',
     description='A simple wrapper for the U.S. Energy Information Administration (EIA) API.',
     long_description=long_description,
     long_description_content_type='text/markdown',
