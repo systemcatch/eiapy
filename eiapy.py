@@ -17,7 +17,7 @@ class EIAError(Exception):
     pass
 
 
-class Series(object):
+class Series:
     """
     Create an object representing a single EIA data series.
 
@@ -26,13 +26,13 @@ class Series(object):
     :param session: object allowing an existing session to be passed, defaults to None.
     """
     def __init__(self, series_id, xml=False, session=None):
-        super(Series, self).__init__()
+        super().__init__()
         self.series_id = series_id
         self.xml = xml
         self.session = session
 
     def _url(self, path):
-        url = 'https://api.eia.gov/series/?api_key={}&series_id={}'.format(API_KEY, self.series_id)
+        url = f'https://api.eia.gov/series/?api_key={API_KEY}&series_id={self.series_id}'
         return url + path
 
     def _fetch(self, url):
@@ -48,23 +48,23 @@ class Series(object):
 
     def last(self, n):
         """Returns the last n datapoints."""
-        url = self._url('&num={}'.format(n))
+        url = self._url(f'&num={n}')
         data = self._fetch(url)
         return data
 
     def last_from(self, n, end):
         """Returns the last n datapoints before a given date."""
-        url = self._url("&num={}&end={}".format(n, end))
+        url = self._url(f"&num={n}&end={end}")
         data = self._fetch(url)
         return data
 
     def get_data(self, start=None, end=None, all_data=False):
         if start and end:
-            limits = '&start={}&end={}'.format(start, end)
+            limits = f'&start={start}&end={end}'
         elif start:
-            limits = '&start={}'.format(start)
+            limits = f'&start={start}'
         elif end:
-            limits = '&end={}'.format(end)
+            limits = f'&end={end}'
         elif all_data:
             # This will return every datapoint in the series!
             limits = ''
@@ -77,7 +77,7 @@ class Series(object):
         return data
 
     def _url_categories(self):
-        url = 'https://api.eia.gov/series/categories/?series_id={}&api_key={}'.format(self.series_id, API_KEY)
+        url = f'https://api.eia.gov/series/categories/?series_id={self.series_id}&api_key={API_KEY}'
         return url
 
     def categories(self):
@@ -87,7 +87,7 @@ class Series(object):
         return data
 
     def __repr__(self):
-        return '{}({!r})'.format(self.__class__.__name__, self.series_id)
+        return f'{self.__class__.__name__}({self.series_id!r})'
 
 
 class MultiSeries(Series):
@@ -99,7 +99,7 @@ class MultiSeries(Series):
     :param session: object allowing an existing session to be passed, defaults to None.
     """
     def __init__(self, multiseries, **kwargs):
-        super(MultiSeries, self).__init__(';'.join(multiseries), **kwargs)
+        super().__init__(';'.join(multiseries), **kwargs)
         self.multiseries = multiseries
         if not isinstance(self.multiseries, list):
             raise EIAError('MultiSeries requires a list of series ids to be passed')
@@ -107,10 +107,10 @@ class MultiSeries(Series):
             raise EIAError('The maximum number of series that can be requested is 100.')
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, self.multiseries)
+        return f'{self.__class__.__name__}({self.multiseries})'
 
 
-class Geoset(object):
+class Geoset:
     """
     Gets a set of the series belonging to the geoset_id and matching the list of regions.
 
@@ -120,7 +120,7 @@ class Geoset(object):
     :param session: object allowing an existing session to be passed, defaults to None.
     """
     def __init__(self, geoset_id, regions, xml=False, session=None):
-        super(Geoset, self).__init__()
+        super().__init__()
         if not isinstance(regions, list):
             raise EIAError('Geoset requires a list of regions to be passed')
         self.geoset_id = geoset_id
@@ -129,7 +129,7 @@ class Geoset(object):
         self.session = session
 
     def _url(self, path):
-        url = 'https://api.eia.gov/geoset/?geoset_id={}&regions={}&api_key={}'.format(self.geoset_id, self.regions, API_KEY)
+        url = f'https://api.eia.gov/geoset/?geoset_id={self.geoset_id}&regions={self.regions}&api_key={API_KEY}'
         return url + path
 
     def _fetch(self, url):
@@ -145,23 +145,23 @@ class Geoset(object):
 
     def last(self, n):
         """Returns the last n datapoints."""
-        url = self._url('&num={}'.format(n))
+        url = self._url(f'&num={n}')
         data = self._fetch(url)
         return data
 
     def last_from(self, n, end):
         """Returns the last n datapoints before a given date."""
-        url = self._url("&num={}&end={}".format(n, end))
+        url = self._url(f"&num={n}&end={end}")
         data = self._fetch(url)
         return data
 
     def get_data(self, start=None, end=None, all_data=False):
         if start and end:
-            limits = '&start={}&end={}'.format(start, end)
+            limits = f'&start={start}&end={end}'
         elif start:
-            limits = '&start={}'.format(start)
+            limits = f'&start={start}'
         elif end:
-            limits = '&end={}'.format(end)
+            limits = f'&end={end}'
         elif all_data:
             # This will return every datapoint in the geoset!
             limits = ''
@@ -174,7 +174,7 @@ class Geoset(object):
         return data
 
     def __repr__(self):
-        return '{}({!r}, {})'.format(self.__class__.__name__, self.geoset_id, self.regions)
+        return f'{self.__class__.__name__}({self.geoset_id!r}, {self.regions})'
 
 
 # NOTE currently broken at the EIA end
@@ -239,7 +239,7 @@ class Geoset(object):
 #         return data
 
 
-class Category(object):
+class Category:
     """
     Gets name and category id for a single category, also lists child categories.
 
@@ -248,7 +248,7 @@ class Category(object):
     :param session: object allowing an existing session to be passed, defaults to None.
     """
     def __init__(self, category_id=None, xml=False, session=None):
-        super(Category, self).__init__()
+        super().__init__()
         self.category_id = category_id
         self.xml = xml
         self.session = session
@@ -266,18 +266,18 @@ class Category(object):
 
     def get_info(self):
         if self.category_id is not None:
-            url = 'https://api.eia.gov/category/?api_key={}&category_id={}'.format(API_KEY, self.category_id)
+            url = f'https://api.eia.gov/category/?api_key={API_KEY}&category_id={self.category_id}'
         else:
-            url = 'https://api.eia.gov/category/?api_key={}'.format(API_KEY)
+            url = f'https://api.eia.gov/category/?api_key={API_KEY}'
 
         data = self._fetch(url)
         return data
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, self.category_id)
+        return f'{self.__class__.__name__}({self.category_id})'
 
 
-class Updates(object):
+class Updates:
     """
     Finds out which series in a Category are recently updated.
 
@@ -286,13 +286,13 @@ class Updates(object):
     :param session: object allowing an existing session to be passed, defaults to None.
     """
     def __init__(self, category_id=None, xml=False, session=None):
-        super(Updates, self).__init__()
+        super().__init__()
         self.category_id = category_id
         self.xml = xml
         self.session = session
 
     def _url(self, path):
-        url = 'https://api.eia.gov/updates/?api_key={}'.format(API_KEY)
+        url = f'https://api.eia.gov/updates/?api_key={API_KEY}'
         return url + path
 
     def _fetch(self, url):
@@ -310,16 +310,16 @@ class Updates(object):
         params = []
 
         if self.category_id is not None:
-            params.append('&category_id={}'.format(self.category_id))
+            params.append(f'&category_id={self.category_id}')
         if deep:
             params.append('&deep=true')
         if rows:
             if rows > 10000:
                 raise EIAError('The maximum number of rows allowed is 10000.')
             else:
-                params.append('&rows={}'.format(rows))
+                params.append(f'&rows={rows}')
         if firstrow:
-            params.append('&firstrow={}'.format(firstrow))
+            params.append(f'&firstrow={firstrow}')
 
         options = ''.join(params)
         url = self._url(options)
@@ -328,10 +328,10 @@ class Updates(object):
         return data
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, self.category_id)
+        return f'{self.__class__.__name__}({self.category_id})'
 
 
-class Search(object):
+class Search:
     """
     Allows searching by series_id, keyword or a date range.
 
@@ -340,13 +340,13 @@ class Search(object):
     :param session: object allowing an existing session to be passed, defaults to None.
     """
     def __init__(self, search_value, xml=False, session=None):
-        super(Search, self).__init__()
+        super().__init__()
         self.search_value = search_value
         self.xml = xml
         self.session = session
 
     def _url(self, path):
-        url = 'https://api.eia.gov/search/?search_value={}'.format(self.search_value)
+        url = f'https://api.eia.gov/search/?search_value={self.search_value}'
         return url + path
 
     def _fetch(self, url):
@@ -361,11 +361,11 @@ class Search(object):
             return json_data
 
     def _find(self, search_term, page_num=None, rows_per_page=None):
-        path = '&search_term={}'.format(search_term)
+        path = f'&search_term={search_term}'
         if page_num:
-            path += '&page_num={}'.format(page_num)
+            path += f'&page_num={page_num}'
         if rows_per_page:
-            path += '&rows_per_page={}'.format(rows_per_page)
+            path += f'&rows_per_page={rows_per_page}'
 
         url = self._url(path)
         data = self._fetch(url)
@@ -389,4 +389,4 @@ class Search(object):
         return data
 
     def __repr__(self):
-        return '{}({!r})'.format(self.__class__.__name__, self.search_value)
+        return f'{self.__class__.__name__}({self.search_value!r})'
